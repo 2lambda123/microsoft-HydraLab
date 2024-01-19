@@ -4,11 +4,10 @@
 package com.microsoft.hydralab.common.entity.common.scanner;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.Data;
-
-import javax.persistence.AttributeConverter;
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.AttributeConverter;
+import lombok.Data;
 
 /**
  * @author zhoule
@@ -17,25 +16,25 @@ import java.util.List;
 
 @Data
 public class LeakInfo implements Serializable {
-    private String keyword;
-    private List<String> LeakWordList;
+  private String keyword;
+  private List<String> LeakWordList;
 
-    public LeakInfo() {
-    }
-    public LeakInfo(String keyword, List<String> LeakWordList) {
-        this.keyword = keyword;
-        this.LeakWordList = LeakWordList;
+  public LeakInfo() {}
+  public LeakInfo(String keyword, List<String> LeakWordList) {
+    this.keyword = keyword;
+    this.LeakWordList = LeakWordList;
+  }
+
+  public static class Converter
+      implements AttributeConverter<List<LeakInfo>, String> {
+    @Override
+    public String convertToDatabaseColumn(List<LeakInfo> attribute) {
+      return JSONObject.toJSONString(attribute);
     }
 
-    public static class Converter implements AttributeConverter<List<LeakInfo>, String> {
-        @Override
-        public String convertToDatabaseColumn(List<LeakInfo> attribute) {
-            return JSONObject.toJSONString(attribute);
-        }
-
-        @Override
-        public List<LeakInfo> convertToEntityAttribute(String dbData) {
-            return JSONObject.parseArray(dbData, LeakInfo.class);
-        }
+    @Override
+    public List<LeakInfo> convertToEntityAttribute(String dbData) {
+      return JSONObject.parseArray(dbData, LeakInfo.class);
     }
+  }
 }
